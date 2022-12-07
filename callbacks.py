@@ -1,5 +1,6 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import time
 
 class VisualizeImages(tf.keras.callbacks.Callback):
     def __init__(self, latent_dim=128):
@@ -17,4 +18,6 @@ class VisualizeImages(tf.keras.callbacks.Callback):
             plt.axis("off")
         plt.suptitle(f"Epoch: {epoch} Disc loss: {logs['discriminator_loss']:.2f} Gen loss: {logs['generator_loss']:.2f}")
         plt.tight_layout()
+        if epoch % 10 == 0:
+            plt.savefig(f'results/results-{time.strftime("%Y%m%d%H%M%S")}.png')
         plt.show()

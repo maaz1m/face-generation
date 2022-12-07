@@ -12,7 +12,7 @@ class GAN(tf.keras.Model):
     def build_discriminator(self):
         discriminator = tf.keras.Sequential(
             [
-                tf.keras.Input(shape=(32, 32, 3)),
+                tf.keras.Input(shape=(64, 64, 3)),
                 tf.keras.layers.Conv2D(64, kernel_size=4, strides=2, padding="same"),
                 tf.keras.layers.LeakyReLU(alpha=0.2),
                 tf.keras.layers.Conv2D(128, kernel_size=4, strides=2, padding="same"),
@@ -31,8 +31,8 @@ class GAN(tf.keras.Model):
         generator = tf.keras.Sequential(
             [
                 tf.keras.Input(shape=(self.latent_dim,)),
-                tf.keras.layers.Dense(4 * 4 * 128),
-                tf.keras.layers.Reshape((4, 4, 128)),
+                tf.keras.layers.Dense(8 * 8 * 128),
+                tf.keras.layers.Reshape((8, 8, 128)),
                 tf.keras.layers.Conv2DTranspose(128, kernel_size=4, strides=2, padding="same"),
                 tf.keras.layers.LeakyReLU(alpha=0.2),
                 tf.keras.layers.Conv2DTranspose(256, kernel_size=4, strides=2, padding="same"),
@@ -61,14 +61,15 @@ class GAN(tf.keras.Model):
 
         real_labels = tf.ones((batch_size, 1))
         fake_labels = tf.zeros((batch_size, 1))
-        random_noise = 0.05 * tf.random.uniform((batch_size, 1))
-        real_labels += random_noise
-        fake_labels += random_noise
+        random_noise = lambda: 0.05 * tf.random.uniform((batch_size, 1))
+        real_labels += random_noise()
+        fake_labels += random_noise()
 
         with tf.GradientTape() as tape:
             real_logits = self.discriminator(real_images)
             fake_logits = self.discriminator(fake_images)
-            discriminator_loss = self.discriminator_loss_fn(real_labels, real_logits) + self.discriminator_loss_fn(fake_labels, fake_logits)
+            discriminator_loss = self.discriminator_loss_fn(real_labels, real_logits) + self.discriminator_loss_fn(
+                fake_labels, fake_logits)
         discriminator_gradients = tape.gradient(discriminator_loss, self.discriminator.trainable_weights)
         self.discriminator_optimizer.apply_gradients(zip(discriminator_gradients, self.discriminator.trainable_weights))
 
