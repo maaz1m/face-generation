@@ -1,9 +1,9 @@
 import tensorflow as tf
-from models import GAN
-from models import WGAN
+from models.GAN import GAN
+from models.WGAN import WGAN
 from callbacks import VisualizeImages
 
-model_type = 'gan'
+model_type = 'wgan'
 
 if model_type == 'gan':
     LATENT_DIM = 128
@@ -34,8 +34,10 @@ if model_type == 'gan':
 elif model_type == 'wgan':
     # TODO Add WGAN train code
     LATENT_DIM = 128
+    D_STEPS = 3
     NUM_EPOCHS = 30
     BATCH_SIZE = 64
+    GP_WEIGHT = 10.0
     # load image files from directory as tensorflow Dataset object
     dataset = tf.keras.preprocessing.image_dataset_from_directory('data/img_align_celeba', label_mode=None,
                                                                   image_size=(64, 64), batch_size=BATCH_SIZE)
@@ -43,7 +45,7 @@ elif model_type == 'wgan':
     # convert integer encodings to float
     dataset = dataset.map(lambda x: x / 255.)
     # create and compile model object
-    model = WGAN(latent_dim=LATENT_DIM)
+    model = WGAN(latent_dim=LATENT_DIM, d_steps = D_STEPS, gp_weight= GP_WEIGHT)
     model.compile()
 
     # create callback for visualizing results

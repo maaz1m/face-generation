@@ -20,5 +20,5 @@ class VisualizeImages(tf.keras.callbacks.Callback):
         plt.tight_layout()
         if epoch % 10 == 0:
             plt.savefig(f'results/results-{time.strftime("%Y%m%d%H%M%S")}.png')
-            self.model.generator.save(f'saved/GAN/generator-{time.strftime("%Y%m%d%-H%M%S")}')
+            self.model.generator.save(f'saved/WGAN/generator-{time.strftime("%Y%m%d%-H%M%S")}')
         plt.show()
