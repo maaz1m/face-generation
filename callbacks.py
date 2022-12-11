@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import time
 
 class VisualizeImages(tf.keras.callbacks.Callback):
-    def __init__(self, latent_dim=128):
+    def __init__(self, latent_dim=128, model_type='gan'):
         self.latent_dim = latent_dim
+        self.model_type = model_type
 
     def on_epoch_end(self, epoch, logs=None):
         random_latent_vectors = tf.random.normal(shape=(10, self.latent_dim))
@@ -18,7 +19,6 @@ class VisualizeImages(tf.keras.callbacks.Callback):
             plt.axis("off")
         plt.suptitle(f"Epoch: {epoch} Disc loss: {logs['discriminator_loss']:.2f} Gen loss: {logs['generator_loss']:.2f}")
         plt.tight_layout()
-        if epoch % 10 == 0:
-            plt.savefig(f'results/results-{time.strftime("%Y%m%d%H%M%S")}.png')
-            self.model.generator.save(f'saved/GAN/generator-{time.strftime("%Y%m%d%-H%M%S")}')
+        if epoch % 10 == 0 or epoch == 1:
+            plt.savefig(f'results/{self.model_type.upper()}/results-{time.strftime("%Y%m%d%H%M%S")}.png')
         plt.show()
