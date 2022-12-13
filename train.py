@@ -1,9 +1,17 @@
 import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+import os
 from models.GAN import GAN
 from models.WGAN import WGAN
+from models.VAE import VAE
 from callbacks import VisualizeImages
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow import keras
+from tensorflow.keras import layers
 
-model_type = 'wgan'
+
+model_type = 'vae'
 
 if model_type == 'gan':
     LATENT_DIM = 128
@@ -61,6 +69,7 @@ elif model_type == 'wgan':
     # save model for further training or inference
     model.generator.save('saved/WGAN/generator')
     model.discriminator.save('saved/WGAN/discriminator')
+
 elif model_type == 'vae':
 
     ####################################################################
@@ -165,5 +174,6 @@ elif model_type == 'vae':
 
     # Save result image in directory
     plt.savefig('VAE_result.png')
+
 else:
     raise Exception('Model type not recognized')
